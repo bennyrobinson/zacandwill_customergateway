@@ -7,9 +7,9 @@ pages_build_output_dir = "./public"
 [vars]
 TENANT_SUBDOMAIN = "zacwill"
 
-# TURNSTILE_SITE_KEY (public) may also be set here for production. If omitted,
-# /api/config falls back to Cloudflare's "always passes" test key.
-# TURNSTILE_SITE_KEY = "0x4AAA..."
+# TURNSTILE_SITE_KEY is public (the browser receives it via /api/config). The
+# matching TURNSTILE_SECRET_KEY must be set out-of-band as a secret.
+TURNSTILE_SITE_KEY = "0x4AAAAAADcTnHYTKu_18Bhu"
 
 # SECRETS — never put these here. Set them out-of-band:
 #   wrangler pages secret put GATEWAY_SITE_KEY
