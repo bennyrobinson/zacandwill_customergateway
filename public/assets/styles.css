@@ -844,6 +844,126 @@ textarea:focus {
   white-space: nowrap;
 }
 
+/* ------------------------------------------------------------ contact / faq */
+.contact-grid {
+  display: grid;
+  gap: clamp(1.75rem, 4vw, 3.5rem);
+  grid-template-columns: 1fr;
+}
+@media (min-width: 820px) {
+  .contact-grid {
+    grid-template-columns: 1.1fr 1fr;
+    align-items: start;
+  }
+}
+.info dl {
+  margin: 0;
+  display: grid;
+  gap: 1.4rem;
+}
+.info dt {
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--oxblood);
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+}
+.info dd {
+  margin: 0;
+  font-size: 1.04rem;
+  color: var(--ink);
+  line-height: 1.5;
+}
+.info dd a {
+  color: var(--ink);
+  text-decoration-color: var(--line-strong);
+}
+.info dd a:hover {
+  color: var(--oxblood);
+}
+
+.hours-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.hours-table th,
+.hours-table td {
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.96rem;
+}
+.hours-table th {
+  text-align: left;
+  font-family: var(--sans);
+  font-weight: 500;
+  text-transform: capitalize;
+  color: var(--ink-soft);
+}
+.hours-table td {
+  text-align: right;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.hours-table tr.is-today th,
+.hours-table tr.is-today td {
+  color: var(--oxblood);
+  font-weight: 600;
+}
+.hours-table tr.is-today th::after {
+  content: " · Today";
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.faq {
+  border-top: 1px solid var(--line-strong);
+}
+.faq details {
+  border-bottom: 1px solid var(--line);
+}
+.faq summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 1.2rem 2.5rem 1.2rem 0;
+  font-family: var(--serif);
+  font-size: clamp(1.1rem, 2vw, 1.32rem);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  position: relative;
+  color: var(--ink);
+  transition: color 0.18s ease;
+}
+.faq summary:hover {
+  color: var(--oxblood);
+}
+.faq summary::-webkit-details-marker {
+  display: none;
+}
+.faq summary::after {
+  content: "+";
+  position: absolute;
+  right: 0.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--sans);
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: var(--oxblood);
+  line-height: 1;
+}
+.faq details[open] summary::after {
+  content: "–";
+}
+.faq .faq-a {
+  padding: 0 2.5rem 1.4rem 0;
+  margin: 0;
+  color: var(--ink-soft);
+  max-width: 70ch;
+  animation: reveal 0.4s ease;
+}
+
 /* small mobile nav */
 @media (max-width: 719px) {
   .nav {

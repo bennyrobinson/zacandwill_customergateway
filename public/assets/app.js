@@ -702,6 +702,186 @@ async function initManage() {
   });
 }
 
+/* ============================== PAGE: CONTACT =========================== */
+const WEEK_ORDER = [
+  "monday",
+  "tuesday",
+  "wednesday",
+  "thursday",
+  "friday",
+  "saturday",
+  "sunday",
+];
+
+async function initContact() {
+  const loading = $("#contact-loading");
+  const content = $("#contact-content");
+  const errorEl = $("#contact-error");
+
+  let info;
+  try {
+    info = await gateway("get_business_info", {});
+  } catch {
+    if (loading) loading.hidden = true;
+    if (errorEl) errorEl.hidden = false;
+    return;
+  }
+  if (loading) loading.hidden = true;
+  if (!info || typeof info !== "object") {
+    if (errorEl) errorEl.hidden = false;
+    return;
+  }
+  if (content) content.hidden = false;
+
+  // Intro / about
+  if (info.about) {
+    const about = $("#contact-about");
+    if (about) {
+      about.textContent = info.about;
+      about.hidden = false;
+    }
+  }
+
+  renderContactDetails(info);
+  renderHours(info);
+  renderFees(info);
+  renderFaqs(info);
+
+  // If every section came back empty, show the graceful fallback instead.
+  const anyShown = [
+    "#contact-section",
+    "#hours-section",
+    "#fees-section",
+    "#faq-section",
+  ].some((sel) => {
+    const e = $(sel);
+    return e && !e.hidden;
+  });
+  if (!anyShown && errorEl) errorEl.hidden = false;
+}
+
+function renderContactDetails(info) {
+  const dl = $("#contact-info");
+  const section = $("#contact-section");
+  if (!dl) return;
+  const rows = [];
+  const addr = info.address || info.location;
+  if (addr) rows.push(["Address", document.createTextNode(addr)]);
+  if (info.phone) {
+    const a = document.createElement("a");
+    a.href = `tel:${String(info.phone).replace(/[^\d+]/g, "")}`;
+    a.textContent = info.phone;
+    rows.push(["Phone", a]);
+  }
+  if (info.contactEmail) {
+    const a = document.createElement("a");
+    a.href = `mailto:${info.contactEmail}`;
+    a.textContent = info.contactEmail;
+    rows.push(["Email", a]);
+  }
+  if (info.serviceArea)
+    rows.push(["Service area", document.createTextNode(info.serviceArea)]);
+
+  if (!rows.length) {
+    if (section) section.hidden = true;
+    return;
+  }
+  dl.innerHTML = "";
+  for (const [label, node] of rows) {
+    const dt = document.createElement("dt");
+    dt.textContent = label;
+    const dd = document.createElement("dd");
+    dd.appendChild(node);
+    dl.append(dt, dd);
+  }
+}
+
+function renderHours(info) {
+  const wrap = $("#hours-section");
+  const body = $("#hours-body");
+  const hours = info && info.hours;
+  if (!body || !hours || typeof hours !== "object") {
+    if (wrap) wrap.hidden = true;
+    return;
+  }
+  // Known days first (in week order), then any unexpected extras.
+  const keys = Object.keys(hours);
+  const known = WEEK_ORDER.filter((d) => keys.some((k) => k.toLowerCase() === d));
+  const extra = keys.filter((k) => !WEEK_ORDER.includes(k.toLowerCase()));
+  const ordered = [...known, ...extra];
+  if (!ordered.length) {
+    if (wrap) wrap.hidden = true;
+    return;
+  }
+
+  // Determine "today" in the firm's timezone for highlighting.
+  let today = "";
+  try {
+    today = new Intl.DateTimeFormat("en-US", {
+      weekday: "long",
+      timeZone: info.timezone || undefined,
+    })
+      .format(new Date())
+      .toLowerCase();
+  } catch {
+    /* invalid timezone — skip highlight */
+  }
+
+  body.innerHTML = "";
+  for (const day of ordered) {
+    const key =
+      keys.find((k) => k.toLowerCase() === day.toLowerCase()) || day;
+    const tr = document.createElement("tr");
+    if (key.toLowerCase() === today) tr.className = "is-today";
+    const th = document.createElement("th");
+    th.scope = "row";
+    th.textContent = key;
+    const td = document.createElement("td");
+    td.textContent = hours[key];
+    tr.append(th, td);
+    body.appendChild(tr);
+  }
+  if (wrap) wrap.hidden = false;
+}
+
+function renderFees(info) {
+  const wrap = $("#fees-section");
+  const target = $("#fees-text");
+  if (!target || !info.fees) {
+    if (wrap) wrap.hidden = true;
+    return;
+  }
+  target.innerHTML = "";
+  for (const para of String(info.fees).split(/\n{2,}/)) {
+    const p = document.createElement("p");
+    p.textContent = para.trim();
+    if (p.textContent) target.appendChild(p);
+  }
+  if (wrap) wrap.hidden = false;
+}
+
+function renderFaqs(info) {
+  const wrap = $("#faq-section");
+  const list = $("#faq-list");
+  const faqs = Array.isArray(info.faqs) ? info.faqs.filter((f) => f && f.q) : [];
+  if (!list || !faqs.length) {
+    if (wrap) wrap.hidden = true;
+    return;
+  }
+  list.innerHTML = "";
+  faqs.forEach((f) => {
+    const d = document.createElement("details");
+    const s = document.createElement("summary");
+    s.textContent = f.q;
+    const a = document.createElement("p");
+    a.className = "faq-a";
+    a.textContent = f.a || "";
+    d.append(s, a);
+    list.appendChild(d);
+  });
+  if (wrap) wrap.hidden = false;
+}
+
 /* ---------------------------------------------------- shared bits per page */
 function preselectFromQuery(sel) {
   if (!sel) return;
@@ -722,6 +902,7 @@ document.addEventListener("DOMContentLoaded", () => {
     enquiry: initEnquiry,
     booking: initBooking,
     manage: initManage,
+    contact: initContact,
   }[page];
   if (init) init().catch((e) => console.error("Init failed:", e));
 });

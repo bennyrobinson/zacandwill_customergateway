@@ -20,6 +20,7 @@
 // proxy can never become an open relay to arbitrary gateway endpoints.
 const ALLOWED_TOOLS = new Set([
   "list_services",
+  "get_business_info",
   "check_eligibility",
   "check_availability",
   "book_consultation",
