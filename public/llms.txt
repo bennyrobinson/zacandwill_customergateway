@@ -1,0 +1,30 @@
+# Zac & Will's Lawyers
+
+> Compensation and injury lawyers acting for people, not insurers. Practice
+> areas: personal injury, workers' compensation, medical negligence, and motor
+> vehicle accidents. First consultation is free.
+
+This site is a public marketing front-end. Human visitors can check
+eligibility, send an enquiry, book a consultation, and reschedule or cancel a
+booking. All actions that touch personal data are protected by Cloudflare
+Turnstile and proxied server-side; the browser never contacts the booking
+backend directly.
+
+## Pages
+
+- [Practice areas & eligibility](/services.html): What we take on, plus a quick eligibility check.
+- [Book a consultation](/book.html): Choose a matter type, view available times, and book.
+- [Send an enquiry](/enquiry.html): Tell us what happened and we'll be in touch.
+- [Manage your booking](/manage.html): Reschedule or cancel — confirmed via an emailed PIN.
+
+## Agent access (MCP)
+
+AI assistants can act on behalf of users via MCP at
+https://zacwill.customer-gateway.com/mcp
+
+Capabilities: check eligibility, view availability, book a consultation, submit
+enquiries. Changing or cancelling a booking requires an email PIN confirmation
+(a 6-digit code, valid for 10 minutes, up to 5 attempts).
+
+Service IDs: personal_injury, workers_compensation, medical_negligence,
+motor_vehicle_accident.

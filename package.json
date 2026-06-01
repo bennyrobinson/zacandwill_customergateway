@@ -1,0 +1,13 @@
+{
+  "name": "zacwill-lawyers",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Marketing site for Zac & Will's Lawyers — Cloudflare Pages + a thin server-side proxy to the Customer Gateway.",
+  "scripts": {
+    "dev": "wrangler pages dev",
+    "deploy": "wrangler pages deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^3.80.0"
+  }
+}

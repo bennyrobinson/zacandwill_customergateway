@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en-AU">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Practice areas &amp; eligibility — Zac &amp; Will's Lawyers</title>
+    <meta
+      name="description"
+      content="See the matters Zac & Will's Lawyers take on, and check your eligibility in two minutes — no contact details required."
+    />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%237c2727'/%3E%3Ctext x='16' y='23' font-family='Georgia,serif' font-size='20' fill='%23f6f2ea' text-anchor='middle'%3EZW%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/assets/styles.css" />
+    <script src="/assets/app.js" defer></script>
+  </head>
+  <body data-page="services">
+    <header class="site-header">
+      <div class="wrap">
+        <a class="brand" href="/">
+          Zac <span class="amp">&amp;</span> Will <small>Lawyers</small>
+        </a>
+        <nav class="nav" aria-label="Primary">
+          <a href="/services.html" aria-current="page">Practice&nbsp;areas</a>
+          <a href="/book.html">Book</a>
+          <a href="/enquiry.html" class="nav-link-secondary">Enquire</a>
+          <a href="/manage.html" class="nav-link-secondary">Manage&nbsp;booking</a>
+          <a href="/book.html" class="btn btn--oxblood nav-cta"
+            >Free consult <span class="arrow">→</span></a
+          >
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="page-head">
+        <div class="wrap">
+          <span class="eyebrow" data-reveal>Practice areas</span>
+          <h1 data-reveal>What we <em>take on.</em></h1>
+          <p data-reveal>
+            These are the matters our team handles day in, day out. Not sure if
+            yours fits? Use the eligibility check below — it's anonymous and takes
+            about two minutes.
+          </p>
+        </div>
+      </section>
+
+      <section class="band">
+        <div class="wrap">
+          <div id="svc-list" class="svc-list">
+            <div class="svc-row">
+              <span class="idx">··</span>
+              <div><p class="is-loading"><span class="spinner"></span> Loading practice areas…</p></div>
+              <span></span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="band band--deep">
+        <div class="wrap">
+          <div class="band-head">
+            <div>
+              <span class="eyebrow">Two-minute check</span>
+              <h2>Could you have a claim?</h2>
+            </div>
+            <p>
+              This doesn't ask for your name or contact details — it's just a
+              quick read on whether your situation is something we can help with.
+            </p>
+          </div>
+
+          <div class="form-layout">
+            <div class="panel" data-reveal>
+              <form id="elig-form" novalidate>
+                <div class="form-grid cols-2">
+                  <div class="field span-2">
+                    <label for="elig-service">Matter type</label>
+                    <select id="elig-service" required></select>
+                  </div>
+                  <div class="field">
+                    <label for="elig-date">Approx. date of incident</label>
+                    <input type="date" id="elig-date" />
+                    <span class="hint">Optional — a rough date is fine.</span>
+                  </div>
+                  <div class="field">
+                    <label for="elig-state">State / territory</label>
+                    <select id="elig-state">
+                      <option value="">Select…</option>
+                      <option>NSW</option>
+                      <option>VIC</option>
+                      <option>QLD</option>
+                      <option>WA</option>
+                      <option>SA</option>
+                      <option>TAS</option>
+                      <option>ACT</option>
+                      <option>NT</option>
+                    </select>
+                  </div>
+                  <div class="field span-2">
+                    <label for="elig-summary">What happened?</label>
+                    <textarea
+                      id="elig-summary"
+                      placeholder="A sentence or two is plenty. Please don't include sensitive personal details here."
+                    ></textarea>
+                  </div>
+                </div>
+
+                <div style="margin: 1.25rem 0">
+                  <div id="elig-turnstile" class="cf-turnstile"></div>
+                </div>
+
+                <div class="form-actions">
+                  <button type="submit" id="elig-submit" class="btn">
+                    Check eligibility <span class="arrow">→</span>
+                  </button>
+                  <span class="hint">No obligation. Nothing is saved to your device.</span>
+                </div>
+
+                <div id="elig-alert" class="alert" role="alert" hidden></div>
+              </form>
+              <div
+                id="elig-result"
+                class="alert"
+                role="status"
+                style="margin-top: 1.25rem"
+                hidden
+              ></div>
+            </div>
+
+            <aside class="aside-note" data-reveal>
+              <h3>Honest answers only</h3>
+              <p>
+                If we don't think you have a claim, we'll say so — and where we
+                can, we'll point you somewhere that can help instead.
+              </p>
+              <p>
+                A positive result here isn't legal advice or a guarantee. It just
+                means it's worth a proper conversation, which is always free.
+              </p>
+              <p>
+                <a href="/book.html">Skip the check and book a consult →</a>
+              </p>
+            </aside>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap">
+        <div>
+          <a class="brand" href="/">Zac <span class="amp">&amp;</span> Will</a>
+          <p style="max-width: 38ch">
+            Compensation and injury lawyers acting for people, not insurers.
+          </p>
+        </div>
+        <div>
+          <h4>Practice areas</h4>
+          <a href="/book.html?service=personal_injury">Personal Injury</a>
+          <a href="/book.html?service=workers_compensation">Workers' Compensation</a>
+          <a href="/book.html?service=medical_negligence">Medical Negligence</a>
+          <a href="/book.html?service=motor_vehicle_accident">Motor Vehicle Accident</a>
+        </div>
+        <div>
+          <h4>Get in touch</h4>
+          <a href="/book.html">Book a consultation</a>
+          <a href="/enquiry.html">Send an enquiry</a>
+          <a href="/manage.html">Manage a booking</a>
+          <a href="/services.html">Check eligibility</a>
+        </div>
+      </div>
+      <div class="footer-legal">
+        <div class="wrap">
+          This website provides general information only and does not constitute
+          legal advice. Liability limited by a scheme approved under Professional
+          Standards Legislation. © <span id="year">2026</span> Zac &amp; Will's
+          Lawyers.
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

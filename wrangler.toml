@@ -1,0 +1,17 @@
+name = "zacwill-lawyers"
+compatibility_date = "2024-11-06"
+pages_build_output_dir = "./public"
+
+# Non-secret config. The tenant subdomain selects which gateway we talk to:
+#   https://${TENANT_SUBDOMAIN}.customer-gateway.com
+[vars]
+TENANT_SUBDOMAIN = "zacwill"
+
+# TURNSTILE_SITE_KEY (public) may also be set here for production. If omitted,
+# /api/config falls back to Cloudflare's "always passes" test key.
+# TURNSTILE_SITE_KEY = "0x4AAA..."
+
+# SECRETS — never put these here. Set them out-of-band:
+#   wrangler pages secret put GATEWAY_SITE_KEY
+#   wrangler pages secret put TURNSTILE_SECRET_KEY
+# and locally via .dev.vars (git-ignored).

@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en-AU">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Manage your booking — Zac &amp; Will's Lawyers</title>
+    <meta
+      name="description"
+      content="Reschedule or cancel your consultation with Zac & Will's Lawyers. For your security, changes are confirmed with a code sent to your email."
+    />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%237c2727'/%3E%3Ctext x='16' y='23' font-family='Georgia,serif' font-size='20' fill='%23f6f2ea' text-anchor='middle'%3EZW%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/assets/styles.css" />
+    <script src="/assets/app.js" defer></script>
+  </head>
+  <body data-page="manage">
+    <header class="site-header">
+      <div class="wrap">
+        <a class="brand" href="/">
+          Zac <span class="amp">&amp;</span> Will <small>Lawyers</small>
+        </a>
+        <nav class="nav" aria-label="Primary">
+          <a href="/services.html">Practice&nbsp;areas</a>
+          <a href="/book.html">Book</a>
+          <a href="/enquiry.html" class="nav-link-secondary">Enquire</a>
+          <a href="/manage.html" class="nav-link-secondary" aria-current="page">Manage&nbsp;booking</a>
+          <a href="/book.html" class="btn btn--oxblood nav-cta"
+            >Free consult <span class="arrow">→</span></a
+          >
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="page-head">
+        <div class="wrap">
+          <span class="eyebrow" data-reveal>Manage your booking</span>
+          <h1 data-reveal>Reschedule or <em>cancel.</em></h1>
+          <p data-reveal>
+            For your security, we'll email a 6-digit code to the address on the
+            booking before making any change. The code is valid for 10 minutes.
+          </p>
+        </div>
+      </section>
+
+      <section class="band">
+        <div class="wrap" style="max-width: 720px">
+          <ol id="manage-steps" class="steps" aria-label="Progress">
+            <li class="active"><span class="n">1.</span>&nbsp;Request a code</li>
+            <li><span class="n">2.</span>&nbsp;Enter the code</li>
+          </ol>
+
+          <!-- STEP 1 -->
+          <div id="manage-step1">
+            <form id="manage-request-form" class="panel" data-reveal novalidate>
+              <div class="form-grid cols-2">
+                <div class="field">
+                  <label for="manage-ref">Booking reference</label>
+                  <input id="manage-ref" required placeholder="e.g. BK-XXXX" />
+                </div>
+                <div class="field">
+                  <label for="manage-email">Email on the booking</label>
+                  <input id="manage-email" type="email" autocomplete="email" required />
+                </div>
+                <div class="field span-2">
+                  <label for="manage-action">What would you like to do?</label>
+                  <select id="manage-action">
+                    <option value="reschedule">Reschedule to a new time</option>
+                    <option value="cancel">Cancel the consultation</option>
+                  </select>
+                </div>
+                <div class="field span-2" id="manage-newstart-field">
+                  <label for="manage-newstart">New preferred time</label>
+                  <input type="datetime-local" id="manage-newstart" />
+                  <span class="hint">We'll confirm availability before finalising.</span>
+                </div>
+              </div>
+
+              <div style="margin: 1.25rem 0">
+                <div id="manage-turnstile1" class="cf-turnstile"></div>
+              </div>
+
+              <div class="form-actions">
+                <button type="submit" id="manage-request-submit" class="btn">
+                  Email me a code <span class="arrow">→</span>
+                </button>
+              </div>
+
+              <div id="manage-alert1" class="alert" role="alert" hidden></div>
+            </form>
+          </div>
+
+          <!-- STEP 2 -->
+          <div id="manage-step2" hidden>
+            <form id="manage-confirm-form" class="panel" novalidate>
+              <div class="field">
+                <label for="manage-pin">6-digit code</label>
+                <input
+                  id="manage-pin"
+                  inputmode="numeric"
+                  pattern="\d{6}"
+                  maxlength="6"
+                  autocomplete="one-time-code"
+                  placeholder="000000"
+                  style="max-width: 9rem; font-family: var(--serif); font-size: 1.5rem; letter-spacing: 0.4em; text-align: center"
+                  required
+                />
+                <span class="hint">
+                  Check your email for the code. It expires in 10 minutes and
+                  allows up to 5 attempts.
+                </span>
+              </div>
+
+              <div style="margin: 1.25rem 0">
+                <div id="manage-turnstile2" class="cf-turnstile"></div>
+              </div>
+
+              <div class="form-actions">
+                <button type="submit" id="manage-confirm-submit" class="btn btn--oxblood">
+                  Confirm change <span class="arrow">→</span>
+                </button>
+                <a href="#" id="manage-restart" class="hint">Start over</a>
+              </div>
+
+              <div id="manage-alert2" class="alert" role="alert" hidden></div>
+            </form>
+          </div>
+
+          <p class="aside-note" style="margin-top: 1.75rem">
+            We'll always show the same message whether or not a booking matches —
+            that's deliberate, so no one can use this form to learn whether you
+            have an appointment with us. Lost your reference?
+            <a href="/enquiry.html">Send us an enquiry</a> and we'll help.
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap">
+        <div>
+          <a class="brand" href="/">Zac <span class="amp">&amp;</span> Will</a>
+          <p style="max-width: 38ch">
+            Compensation and injury lawyers acting for people, not insurers.
+          </p>
+        </div>
+        <div>
+          <h4>Practice areas</h4>
+          <a href="/book.html?service=personal_injury">Personal Injury</a>
+          <a href="/book.html?service=workers_compensation">Workers' Compensation</a>
+          <a href="/book.html?service=medical_negligence">Medical Negligence</a>
+          <a href="/book.html?service=motor_vehicle_accident">Motor Vehicle Accident</a>
+        </div>
+        <div>
+          <h4>Get in touch</h4>
+          <a href="/book.html">Book a consultation</a>
+          <a href="/enquiry.html">Send an enquiry</a>
+          <a href="/manage.html">Manage a booking</a>
+          <a href="/services.html">Check eligibility</a>
+        </div>
+      </div>
+      <div class="footer-legal">
+        <div class="wrap">
+          This website provides general information only and does not constitute
+          legal advice. Liability limited by a scheme approved under Professional
+          Standards Legislation. © <span id="year">2026</span> Zac &amp; Will's
+          Lawyers.
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

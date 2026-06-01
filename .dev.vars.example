@@ -1,0 +1,17 @@
+# Copy to `.dev.vars` for local development with `wrangler pages dev`.
+# `.dev.vars` is git-ignored — never commit real keys.
+
+# Bearer token the proxy sends to the gateway. Required.
+GATEWAY_SITE_KEY="replace-with-gateway-site-key"
+
+# Cloudflare Turnstile SECRET key (server-side verification). Required.
+# Cloudflare's "always passes" test secret is used below so local dev works
+# out of the box. Replace with your real secret for production.
+TURNSTILE_SECRET_KEY="1x0000000000000000000000000000000AA"
+
+# Which gateway tenant to talk to (also set in wrangler.toml [vars]).
+TENANT_SUBDOMAIN="zacwill"
+
+# Public Turnstile SITE key. Optional locally — /api/config falls back to the
+# "always passes" test site key (1x00000000000000000000AA) if unset.
+# TURNSTILE_SITE_KEY="1x00000000000000000000AA"

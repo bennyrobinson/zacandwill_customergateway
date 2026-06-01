@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en-AU">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Send an enquiry — Zac &amp; Will's Lawyers</title>
+    <meta
+      name="description"
+      content="Tell Zac & Will's Lawyers what happened. Send a confidential enquiry and our team will be in touch."
+    />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%237c2727'/%3E%3Ctext x='16' y='23' font-family='Georgia,serif' font-size='20' fill='%23f6f2ea' text-anchor='middle'%3EZW%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/assets/styles.css" />
+    <script src="/assets/app.js" defer></script>
+  </head>
+  <body data-page="enquiry">
+    <header class="site-header">
+      <div class="wrap">
+        <a class="brand" href="/">
+          Zac <span class="amp">&amp;</span> Will <small>Lawyers</small>
+        </a>
+        <nav class="nav" aria-label="Primary">
+          <a href="/services.html">Practice&nbsp;areas</a>
+          <a href="/book.html">Book</a>
+          <a href="/enquiry.html" class="nav-link-secondary" aria-current="page">Enquire</a>
+          <a href="/manage.html" class="nav-link-secondary">Manage&nbsp;booking</a>
+          <a href="/book.html" class="btn btn--oxblood nav-cta"
+            >Free consult <span class="arrow">→</span></a
+          >
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="page-head">
+        <div class="wrap">
+          <span class="eyebrow" data-reveal>Get in touch</span>
+          <h1 data-reveal>Tell us <em>what happened.</em></h1>
+          <p data-reveal>
+            A few lines is all we need to get started. We'll read it carefully and
+            come back to you — there's no cost and no obligation.
+          </p>
+        </div>
+      </section>
+
+      <section class="band">
+        <div class="wrap">
+          <div class="form-layout">
+            <div class="panel" data-reveal>
+              <form id="enq-form" novalidate>
+                <div class="form-grid cols-2">
+                  <div class="field span-2">
+                    <label for="enq-service">What's it about?</label>
+                    <select id="enq-service" required></select>
+                  </div>
+                  <div class="field">
+                    <label for="enq-name">Your name</label>
+                    <input id="enq-name" autocomplete="name" required />
+                  </div>
+                  <div class="field">
+                    <label for="enq-email">Email</label>
+                    <input
+                      id="enq-email"
+                      type="email"
+                      autocomplete="email"
+                      required
+                    />
+                  </div>
+                  <div class="field span-2">
+                    <label for="enq-phone">Phone <span class="hint">(optional)</span></label>
+                    <input id="enq-phone" type="tel" autocomplete="tel" />
+                  </div>
+                  <div class="field span-2">
+                    <label for="enq-message">Your message</label>
+                    <textarea
+                      id="enq-message"
+                      placeholder="A brief outline of what happened and how we can help."
+                    ></textarea>
+                  </div>
+                </div>
+
+                <label class="consent" style="margin-top: 1.1rem">
+                  <input type="checkbox" id="enq-consent" required />
+                  <span>
+                    I consent to Zac &amp; Will's Lawyers collecting these details
+                    to respond to my enquiry, in line with their privacy policy. I
+                    understand this does not create a lawyer–client relationship.
+                  </span>
+                </label>
+
+                <div style="margin: 1.25rem 0">
+                  <div id="enq-turnstile" class="cf-turnstile"></div>
+                </div>
+
+                <div class="form-actions">
+                  <button type="submit" id="enq-submit" class="btn">
+                    Send enquiry <span class="arrow">→</span>
+                  </button>
+                  <span class="hint">Confidential. Usually answered within one business day.</span>
+                </div>
+
+                <div id="enq-alert" class="alert" role="alert" hidden></div>
+              </form>
+              <div id="enq-alert-after"></div>
+            </div>
+
+            <aside class="aside-note" data-reveal>
+              <h3>Prefer to talk?</h3>
+              <p>
+                If you'd rather speak with someone, you can book a free
+                consultation at a time that suits you.
+              </p>
+              <p><a href="/book.html">Book a consultation →</a></p>
+              <h3 style="margin-top: 2rem">Keep it brief</h3>
+              <p>
+                Please don't send sensitive documents or detailed medical history
+                yet — we'll ask for what we need once we're acting for you.
+              </p>
+            </aside>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap">
+        <div>
+          <a class="brand" href="/">Zac <span class="amp">&amp;</span> Will</a>
+          <p style="max-width: 38ch">
+            Compensation and injury lawyers acting for people, not insurers.
+          </p>
+        </div>
+        <div>
+          <h4>Practice areas</h4>
+          <a href="/book.html?service=personal_injury">Personal Injury</a>
+          <a href="/book.html?service=workers_compensation">Workers' Compensation</a>
+          <a href="/book.html?service=medical_negligence">Medical Negligence</a>
+          <a href="/book.html?service=motor_vehicle_accident">Motor Vehicle Accident</a>
+        </div>
+        <div>
+          <h4>Get in touch</h4>
+          <a href="/book.html">Book a consultation</a>
+          <a href="/enquiry.html">Send an enquiry</a>
+          <a href="/manage.html">Manage a booking</a>
+          <a href="/services.html">Check eligibility</a>
+        </div>
+      </div>
+      <div class="footer-legal">
+        <div class="wrap">
+          This website provides general information only and does not constitute
+          legal advice. Liability limited by a scheme approved under Professional
+          Standards Legislation. © <span id="year">2026</span> Zac &amp; Will's
+          Lawyers.
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
