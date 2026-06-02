@@ -1,0 +1,58 @@
+{
+  "note": "Engagement plans are billed monthly. Custom scopes available — book a call to discuss. ⚠️ PLACEHOLDER VALUES: edit this file to set your real plan names, prices and features.",
+  "plans": [
+    {
+      "id": "starter",
+      "name": "Starter",
+      "description": "A focused engagement to get a single initiative moving.",
+      "price": "$2,500",
+      "per": "/ month",
+      "note": "3-month minimum",
+      "features": [
+        "Fortnightly strategy session",
+        "One workstream at a time",
+        "Async support via email",
+        "Monthly progress report"
+      ],
+      "cta": "Book an intro call",
+      "ctaHref": "/book.html",
+      "featured": false
+    },
+    {
+      "id": "growth",
+      "name": "Growth",
+      "description": "Hands-on partnership for teams scaling several initiatives.",
+      "price": "$6,500",
+      "per": "/ month",
+      "note": "Most popular for growing teams",
+      "features": [
+        "Weekly strategy + working sessions",
+        "Up to three parallel workstreams",
+        "Priority async support",
+        "Quarterly roadmap & review",
+        "Stakeholder reporting"
+      ],
+      "cta": "Book an intro call",
+      "ctaHref": "/book.html",
+      "featured": true
+    },
+    {
+      "id": "enterprise",
+      "name": "Enterprise",
+      "description": "Embedded advisory and delivery for complex programs.",
+      "price": "Custom",
+      "per": "",
+      "note": "Tailored to your scope",
+      "features": [
+        "Dedicated engagement lead",
+        "Unlimited workstreams",
+        "On-site days available",
+        "Custom SLAs & governance",
+        "Executive briefings"
+      ],
+      "cta": "Talk to us",
+      "ctaHref": "/enquiry.html",
+      "featured": false
+    }
+  ]
+}

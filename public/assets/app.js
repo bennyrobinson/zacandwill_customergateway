@@ -1,28 +1,21 @@
 /* =========================================================================
-   Zac & Will's Lawyers — front-end logic.
+   Consulting site — front-end logic.
 
    Everything that touches the Customer Gateway goes through gateway(), which
    POSTs { args, turnstileToken } to our own /api/<tool> proxy. The browser
    never knows the gateway URL, the gateway key, or the Turnstile secret.
+
+   Business-specific content (name, tagline, about, services, hours, FAQs) is
+   fetched live from the gateway so the site stays a single source of truth.
+   The only thing the gateway doesn't provide is pricing — that lives in the
+   editable /assets/plans.json.
    ========================================================================= */
 
 /* ----------------------------------------------------------------- helpers */
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
 
-const SERVICE_LABELS = {
-  personal_injury: "Personal Injury",
-  workers_compensation: "Workers' Compensation",
-  medical_negligence: "Medical Negligence",
-  motor_vehicle_accident: "Motor Vehicle Accident",
-};
-
-// Known service IDs for this tenant — used as a fallback if list_services
-// is unreachable so the forms still work.
-const FALLBACK_SERVICES = Object.keys(SERVICE_LABELS);
-
 function labelFor(id) {
-  if (SERVICE_LABELS[id]) return SERVICE_LABELS[id];
   return String(id || "")
     .replace(/[_-]+/g, " ")
     .replace(/\b\w/g, (c) => c.toUpperCase());
@@ -35,10 +28,23 @@ function normalizeService(s) {
   if (!id) return null;
   return {
     id,
-    label: s.name || s.title || s.label || labelFor(id),
+    label: s.title || s.name || s.label || labelFor(id),
     description: s.description || s.summary || s.blurb || "",
+    accepting: s.acceptingClients !== false,
   };
 }
+
+function initials(name) {
+  const parts = String(name || "").trim().split(/\s+/).filter(Boolean);
+  if (!parts.length) return "•";
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+}
+
+const escapeHtml = (s) =>
+  String(s ?? "").replace(/[&<>"']/g, (c) =>
+    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])
+  );
 
 /* --------------------------------------------------------- gateway client */
 async function gateway(tool, args = {}, turnstileToken) {
@@ -75,15 +81,38 @@ async function loadServices() {
   try {
     const data = await gateway("list_services", {});
     const raw = Array.isArray(data) ? data : data.services || [];
-    const list = raw.map(normalizeService).filter(Boolean);
-    _servicesCache = list.length ? list : FALLBACK_SERVICES.map(normalizeService);
+    _servicesCache = raw.map(normalizeService).filter(Boolean);
   } catch {
-    _servicesCache = FALLBACK_SERVICES.map(normalizeService);
+    _servicesCache = [];
   }
   return _servicesCache;
 }
 
-function fillServiceSelect(sel, services, { placeholder = "Select a matter type…" } = {}) {
+let _businessCache;
+async function loadBusinessInfo() {
+  if (_businessCache !== undefined) return _businessCache;
+  try {
+    _businessCache = await gateway("get_business_info", {});
+  } catch {
+    _businessCache = null;
+  }
+  return _businessCache;
+}
+
+let _plansCache;
+async function loadPlans() {
+  if (_plansCache !== undefined) return _plansCache;
+  try {
+    const r = await fetch("/assets/plans.json");
+    _plansCache = await r.json();
+  } catch {
+    _plansCache = null;
+  }
+  return _plansCache;
+}
+
+function fillServiceSelect(sel, services, { placeholder = "Select a service…" } = {}) {
+  if (!sel) return;
   sel.innerHTML = "";
   const ph = document.createElement("option");
   ph.value = "";
@@ -126,9 +155,9 @@ function loadTurnstileScript() {
 }
 
 async function mountTurnstile(container) {
+  if (!container) return { getToken: () => null, reset: () => {} };
   const cfg = await CONFIG;
   await loadTurnstileScript();
-  // window.turnstile can appear a tick after the script load event.
   await new Promise((res) => {
     if (window.turnstile?.render) return res();
     const t = setInterval(() => {
@@ -141,7 +170,7 @@ async function mountTurnstile(container) {
   let token = null;
   const id = window.turnstile.render(container, {
     sitekey: cfg.turnstileSiteKey,
-    theme: "light",
+    theme: "auto",
     callback: (t) => {
       token = t;
     },
@@ -181,7 +210,6 @@ function showAlert(el, kind, html) {
 function clearAlert(el) {
   if (el) el.hidden = true;
 }
-
 function setBusy(btn, busy, idleLabel) {
   if (!btn) return;
   if (busy) {
@@ -217,13 +245,7 @@ const fmtTime = (iso) =>
     minute: "2-digit",
   });
 
-const escapeHtml = (s) =>
-  String(s ?? "").replace(/[&<>"']/g, (c) =>
-    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])
-  );
-
 function toISO(value, endOfDay = false) {
-  // Accepts a yyyy-mm-dd (date input) or full datetime-local value.
   if (!value) return null;
   if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
     return new Date(`${value}T${endOfDay ? "23:59:59" : "00:00:00"}`).toISOString();
@@ -231,10 +253,8 @@ function toISO(value, endOfDay = false) {
   const d = new Date(value);
   return isNaN(d) ? null : d.toISOString();
 }
-
 function todayInput() {
-  const d = new Date();
-  return d.toISOString().slice(0, 10);
+  return new Date().toISOString().slice(0, 10);
 }
 function daysFromTodayInput(n) {
   const d = new Date();
@@ -242,40 +262,257 @@ function daysFromTodayInput(n) {
   return d.toISOString().slice(0, 10);
 }
 
-/* ---------------------------------------------------------- reveal stagger */
 function initReveal() {
   $$("[data-reveal]").forEach((el, i) => {
     el.style.animationDelay = `${Math.min(i * 80, 600)}ms`;
   });
 }
 
-/* ============================== PAGE: SERVICES =========================== */
+/* ============================ CHROME HYDRATION ========================== */
+// Fill brand, title, footer and contact details from get_business_info on
+// every page, so the whole site reflects the gateway tenant automatically.
+async function hydrateChrome() {
+  const year = $("#year");
+  if (year) year.textContent = String(new Date().getFullYear());
+
+  const info = await loadBusinessInfo();
+  if (!info) return;
+
+  if (info.name) {
+    $$('[data-bi="name"]').forEach((el) => {
+      el.textContent = info.name;
+      el.removeAttribute("data-empty");
+    });
+    $$('[data-bi="mark"]').forEach((el) => (el.textContent = initials(info.name)));
+    const base = document.body.dataset.title;
+    document.title = base ? `${base} — ${info.name}` : info.name;
+  }
+
+  const tagline = info.tagline || "";
+  $$('[data-bi="tagline"]').forEach((el) => {
+    if (tagline) el.textContent = tagline;
+  });
+  $$('[data-bi="about-short"]').forEach((el) => {
+    if (info.about) el.textContent = info.about;
+  });
+
+  // Footer contact links
+  const phoneEl = $('[data-bi="phone"]');
+  if (phoneEl && info.phone) {
+    phoneEl.textContent = info.phone;
+    phoneEl.href = `tel:${String(info.phone).replace(/[^\d+]/g, "")}`;
+    phoneEl.hidden = false;
+  }
+  const emailEl = $('[data-bi="email"]');
+  if (emailEl && info.contactEmail) {
+    emailEl.textContent = info.contactEmail;
+    emailEl.href = `mailto:${info.contactEmail}`;
+    emailEl.hidden = false;
+  }
+  const locEl = $('[data-bi="location"]');
+  if (locEl && (info.address || info.location)) {
+    locEl.textContent = info.address || info.location;
+    locEl.hidden = false;
+  }
+}
+
+/* ================================ PAGE: HOME ============================ */
+async function initHome() {
+  const [info, services, plansData] = await Promise.all([
+    loadBusinessInfo(),
+    loadServices(),
+    loadPlans(),
+  ]);
+
+  // Hero lede — prefer the business "about", fall back to tagline.
+  if (info) {
+    const lede = $("#home-lede");
+    if (lede && (info.about || info.tagline)) {
+      lede.textContent = info.about || info.tagline;
+    }
+  }
+
+  // About + approach
+  fillSection("#home-about-section", "#home-about", info && info.about);
+  fillSection("#home-approach-section", "#home-approach", info && info.ourApproach);
+
+  // How it works (array of steps)
+  renderSteps(info && info.howItWorks);
+
+  // Services preview (first few)
+  renderServiceCards($("#home-services"), services.slice(0, 4));
+  const svcSection = $("#home-services-section");
+  if (svcSection) svcSection.hidden = services.length === 0;
+
+  // Plans teaser (first three)
+  renderPlanCards($("#home-plans"), plansData, { limit: 3, teaser: true });
+  const planSection = $("#home-plans-section");
+  if (planSection)
+    planSection.hidden = !(plansData && Array.isArray(plansData.plans) && plansData.plans.length);
+
+  // Team
+  renderTeam(info && info.team);
+}
+
+function fillSection(sectionSel, targetSel, value) {
+  const target = $(targetSel);
+  const section = $(sectionSel);
+  if (!target) return;
+  if (!value) {
+    if (section) section.hidden = true;
+    return;
+  }
+  target.textContent = value;
+  if (section) section.hidden = false;
+}
+
+function renderSteps(steps) {
+  const wrap = $("#home-steps");
+  const section = $("#home-steps-section");
+  if (!wrap) return;
+  const list = Array.isArray(steps) ? steps.filter(Boolean) : [];
+  if (!list.length) {
+    if (section) section.hidden = true;
+    return;
+  }
+  wrap.innerHTML = "";
+  list.forEach((text, i) => {
+    const row = document.createElement("div");
+    row.className = "step";
+    row.innerHTML = `<span class="num">${String(i + 1).padStart(2, "0")}</span><p></p>`;
+    row.querySelector("p").textContent = text;
+    wrap.appendChild(row);
+  });
+  if (section) section.hidden = false;
+}
+
+function renderServiceCards(wrap, services) {
+  if (!wrap) return;
+  wrap.innerHTML = "";
+  services.forEach((svc, i) => {
+    const card = document.createElement("article");
+    card.className = "card product";
+    card.setAttribute("data-reveal", "");
+    card.style.animationDelay = `${i * 70}ms`;
+    card.innerHTML = `
+      <div class="product-top">
+        <span class="sec-num">${String(i + 1).padStart(2, "0")}</span>
+        <span class="tag ${svc.accepting ? "tag--ok" : "tag--muted"}">${
+      svc.accepting ? "Available" : "Waitlist"
+    }</span>
+      </div>
+      <h3></h3>
+      <p></p>
+      <a class="card-link" href="/book.html?service=${encodeURIComponent(
+        svc.id
+      )}">Book a call <span class="arrow">→</span></a>`;
+    card.querySelector("h3").textContent = svc.label;
+    card.querySelector("p").textContent =
+      svc.description || "Talk to us about how this can work for you.";
+    wrap.appendChild(card);
+  });
+}
+
+function renderTeam(team) {
+  const wrap = $("#home-team");
+  const section = $("#home-team-section");
+  if (!wrap) return;
+  const list = Array.isArray(team) ? team.filter((m) => m && m.name) : [];
+  if (!list.length) {
+    if (section) section.hidden = true;
+    return;
+  }
+  wrap.innerHTML = "";
+  list.forEach((m) => {
+    const el = document.createElement("article");
+    el.className = "member";
+    el.innerHTML = `
+      <div class="avatar"></div>
+      <h3></h3>
+      <p class="role"></p>
+      <p class="bio"></p>`;
+    el.querySelector(".avatar").textContent = initials(m.name);
+    el.querySelector("h3").textContent = m.name;
+    el.querySelector(".role").textContent = m.role || "";
+    el.querySelector(".bio").textContent = m.bio || "";
+    wrap.appendChild(el);
+  });
+  if (section) section.hidden = false;
+}
+
+/* ============================== PAGE: PRICING ========================== */
+async function initPricing() {
+  const data = await loadPlans();
+  const wrap = $("#plans-list");
+  const note = $("#plans-note");
+  const errorEl = $("#plans-error");
+  if (!data || !Array.isArray(data.plans) || !data.plans.length) {
+    if (wrap) wrap.hidden = true;
+    if (errorEl) errorEl.hidden = false;
+    return;
+  }
+  if (note && data.note) {
+    note.textContent = data.note;
+    note.hidden = false;
+  }
+  renderPlanCards(wrap, data, {});
+}
+
+function renderPlanCards(wrap, data, { limit, teaser } = {}) {
+  if (!wrap) return;
+  let plans = data && Array.isArray(data.plans) ? data.plans : [];
+  if (limit) plans = plans.slice(0, limit);
+  if (!plans.length) return;
+  wrap.classList.toggle("cols-3", plans.length % 3 === 0 || plans.length > 2);
+  wrap.innerHTML = "";
+  plans.forEach((p, i) => {
+    const el = document.createElement("article");
+    el.className = "plan" + (p.featured ? " plan--featured" : "");
+    el.setAttribute("data-reveal", "");
+    el.style.animationDelay = `${i * 70}ms`;
+
+    const features =
+      !teaser && Array.isArray(p.features) && p.features.length
+        ? `<ul>${p.features
+            .map((f) => `<li>${escapeHtml(f)}</li>`)
+            .join("")}</ul>`
+        : "";
+    const price = p.price
+      ? `<div class="price">${escapeHtml(p.price)}${
+          p.per ? ` <span class="per">${escapeHtml(p.per)}</span>` : ""
+        }</div>`
+      : "";
+    const ctaHref = p.ctaHref || "/book.html";
+    const ctaLabel = p.cta || "Book a call";
+    el.innerHTML = `
+      <h3>${escapeHtml(p.name || "")}</h3>
+      <p class="plan-desc">${escapeHtml(p.description || "")}</p>
+      ${price}
+      ${p.note ? `<p class="plan-note">${escapeHtml(p.note)}</p>` : ""}
+      ${features}
+      <a class="btn ${p.featured ? "btn--accent" : "btn--ghost"}" href="${escapeHtml(
+      ctaHref
+    )}">${escapeHtml(ctaLabel)} <span class="arrow">→</span></a>`;
+    wrap.appendChild(el);
+  });
+}
+
+/* ============================== PAGE: SERVICES ========================= */
 async function initServices() {
   const list = $("#svc-list");
   const sel = $("#elig-service");
   const services = await loadServices();
 
   if (list) {
-    list.innerHTML = "";
-    services.forEach((svc, i) => {
-      const row = document.createElement("div");
-      row.className = "svc-row";
-      row.setAttribute("data-reveal", "");
-      row.style.animationDelay = `${i * 70}ms`;
-      row.innerHTML = `
-        <span class="idx">${String(i + 1).padStart(2, "0")}</span>
-        <div>
-          <h3>${escapeHtml(svc.label)}</h3>
-          <p>${escapeHtml(svc.description || defaultBlurb(svc.id))}</p>
-        </div>
-        <a class="btn btn--ghost" href="/book.html?service=${encodeURIComponent(
-          svc.id
-        )}">Book a consult <span class="arrow">→</span></a>`;
-      list.appendChild(row);
-    });
+    if (!services.length) {
+      list.innerHTML =
+        '<div class="alert alert--info">Our services list is loading or temporarily unavailable. Please <a href="/enquiry.html">send an enquiry</a> and we\'ll help.</div>';
+    } else {
+      renderServiceCards(list, services);
+    }
   }
 
-  if (sel) fillServiceSelect(sel, services);
+  if (sel) fillServiceSelect(sel, services, { placeholder: "Which area can we help with?" });
 
   const form = $("#elig-form");
   if (!form) return;
@@ -297,8 +534,6 @@ async function initServices() {
     try {
       const args = {
         service: sel.value,
-        incident_date: $("#elig-date").value || undefined,
-        state: $("#elig-state").value || undefined,
         summary: $("#elig-summary").value || undefined,
       };
       const r = await gateway("check_eligibility", args, token);
@@ -308,8 +543,8 @@ async function initServices() {
         <div>
           <strong>${
             r.eligible
-              ? "This looks like something we can help with."
-              : "We may not be the right fit — but let's check."
+              ? "Great — this looks like a strong fit."
+              : "We might not be the right fit — let's talk it through."
           }</strong>
           ${r.reason ? `<p style="margin:.5rem 0 0">${escapeHtml(r.reason)}</p>` : ""}
           ${
@@ -320,9 +555,9 @@ async function initServices() {
               : ""
           }
           <p style="margin:.75rem 0 0">
-            <a class="btn btn--oxblood" href="/book.html?service=${encodeURIComponent(
+            <a class="btn btn--accent" href="/book.html?service=${encodeURIComponent(
               sel.value
-            )}">Book a free consult <span class="arrow">→</span></a>
+            )}">Book an intro call <span class="arrow">→</span></a>
           </p>
         </div>`;
       resultEl.hidden = false;
@@ -335,24 +570,10 @@ async function initServices() {
   });
 }
 
-function defaultBlurb(id) {
-  const map = {
-    personal_injury:
-      "Compensation for injuries caused by another party's negligence — public liability, slips and falls, and more.",
-    workers_compensation:
-      "Claims for injuries sustained at work, including disputed and rejected claims.",
-    medical_negligence:
-      "Action where substandard medical care has caused avoidable harm.",
-    motor_vehicle_accident:
-      "Claims arising from road accidents, whether driver, passenger, cyclist or pedestrian.",
-  };
-  return map[id] || "Speak with our team about your circumstances.";
-}
-
 /* =============================== PAGE: ENQUIRY ========================== */
 async function initEnquiry() {
   const sel = $("#enq-service");
-  fillServiceSelect(sel, await loadServices());
+  fillServiceSelect(sel, await loadServices(), { placeholder: "What's it about?" });
   preselectFromQuery(sel);
 
   const form = $("#enq-form");
@@ -388,8 +609,8 @@ async function initEnquiry() {
       showAlert(
         alertEl,
         "good",
-        `<div><strong>Thank you — your enquiry is with us.</strong>
-         <p style="margin:.5rem 0 0">A member of our team will be in touch shortly.${
+        `<div><strong>Thanks — your message is with us.</strong>
+         <p style="margin:.5rem 0 0">We'll be in touch shortly.${
            r.enquiry_id
              ? ` Your reference is <strong>${escapeHtml(r.enquiry_id)}</strong>.`
              : ""
@@ -408,7 +629,7 @@ async function initEnquiry() {
 async function initBooking() {
   const sel = $("#book-service");
   const services = await loadServices();
-  fillServiceSelect(sel, services);
+  fillServiceSelect(sel, services, { placeholder: "What would you like to discuss?" });
   preselectFromQuery(sel);
 
   const fromEl = $("#book-from");
@@ -430,7 +651,7 @@ async function initBooking() {
     selectedStart = null;
     detailSection.hidden = true;
     if (!sel.value) {
-      showAlert(slotsAlert, "bad", "Please choose a matter type first.");
+      showAlert(slotsAlert, "bad", "Please choose a service first.");
       return;
     }
     setBusy(findBtn, true, "Searching…");
@@ -459,7 +680,6 @@ async function initBooking() {
   });
 
   function renderSlots(slots) {
-    // group by day
     const byDay = new Map();
     for (const iso of slots.sort()) {
       const key = new Date(iso).toDateString();
@@ -498,7 +718,6 @@ async function initBooking() {
     }
   }
 
-  // details + confirm
   const ts = await mountTurnstile($("#book-turnstile"));
   const bookAlert = $("#book-alert");
   $("#book-detail-form").addEventListener("submit", async (e) => {
@@ -537,22 +756,20 @@ async function initBooking() {
         bookAlert,
         "good",
         `<div>
-          <strong>${escapeHtml(
-            r.confirmation || "Your consultation is booked."
-          )}</strong>
-          <p style="margin:.6rem 0 0">${escapeHtml(
-            fmtDateTime(selectedStart)
-          )}${r.status ? ` — ${escapeHtml(r.status)}` : ""}</p>
+          <strong>${escapeHtml(r.confirmation || "Your call is booked.")}</strong>
+          <p style="margin:.6rem 0 0">${escapeHtml(fmtDateTime(selectedStart))}${
+          r.status ? ` — ${escapeHtml(r.status)}` : ""
+        }</p>
           ${
             r.booking_uid
               ? `<p style="margin:.4rem 0 0">Booking reference: <strong>${escapeHtml(
                   r.booking_uid
-                )}</strong> — keep this to manage your appointment.</p>`
+                )}</strong> — keep this to manage your call.</p>`
               : ""
           }
           ${
             r.meeting_url
-              ? `<p style="margin:.6rem 0 0"><a class="btn btn--oxblood" href="${encodeURI(
+              ? `<p style="margin:.6rem 0 0"><a class="btn btn--accent" href="${encodeURI(
                   r.meeting_url
                 )}" target="_blank" rel="noopener">Join meeting link <span class="arrow">→</span></a></p>`
               : ""
@@ -614,7 +831,6 @@ async function initManage() {
       }
       const r = await gateway("request_booking_change", args, token);
       challengeId = r.challenge_id || null;
-      // Always show the same neutral message — never reveal if the booking exists.
       showAlert(
         alert1,
         "info",
@@ -623,7 +839,6 @@ async function initManage() {
             "If a matching booking exists, we've emailed a 6-digit code to confirm this change."
         )
       );
-      // Advance to PIN step.
       step1.hidden = true;
       step2.hidden = false;
       $$("#manage-steps li").forEach((li, i) =>
@@ -688,7 +903,6 @@ async function initManage() {
         }</div>`
       );
     } catch (err) {
-      // Wrong/expired PIN — let them retry; new token required each attempt.
       showAlert(alert2, "bad", escapeHtml(err.message));
       ts2.reset();
     } finally {
@@ -718,14 +932,7 @@ async function initContact() {
   const content = $("#contact-content");
   const errorEl = $("#contact-error");
 
-  let info;
-  try {
-    info = await gateway("get_business_info", {});
-  } catch {
-    if (loading) loading.hidden = true;
-    if (errorEl) errorEl.hidden = false;
-    return;
-  }
+  const info = await loadBusinessInfo();
   if (loading) loading.hidden = true;
   if (!info || typeof info !== "object") {
     if (errorEl) errorEl.hidden = false;
@@ -733,7 +940,6 @@ async function initContact() {
   }
   if (content) content.hidden = false;
 
-  // Intro / about
   if (info.about) {
     const about = $("#contact-about");
     if (about) {
@@ -747,7 +953,6 @@ async function initContact() {
   renderFees(info);
   renderFaqs(info);
 
-  // If every section came back empty, show the graceful fallback instead.
   const anyShown = [
     "#contact-section",
     "#hours-section",
@@ -804,7 +1009,6 @@ function renderHours(info) {
     if (wrap) wrap.hidden = true;
     return;
   }
-  // Known days first (in week order), then any unexpected extras.
   const keys = Object.keys(hours);
   const known = WEEK_ORDER.filter((d) => keys.some((k) => k.toLowerCase() === d));
   const extra = keys.filter((k) => !WEEK_ORDER.includes(k.toLowerCase()));
@@ -814,7 +1018,6 @@ function renderHours(info) {
     return;
   }
 
-  // Determine "today" in the firm's timezone for highlighting.
   let today = "";
   try {
     today = new Intl.DateTimeFormat("en-US", {
@@ -829,8 +1032,7 @@ function renderHours(info) {
 
   body.innerHTML = "";
   for (const day of ordered) {
-    const key =
-      keys.find((k) => k.toLowerCase() === day.toLowerCase()) || day;
+    const key = keys.find((k) => k.toLowerCase() === day.toLowerCase()) || day;
     const tr = document.createElement("tr");
     if (key.toLowerCase() === today) tr.className = "is-today";
     const th = document.createElement("th");
@@ -894,11 +1096,12 @@ function preselectFromQuery(sel) {
 /* ------------------------------------------------------------- bootstrapping */
 document.addEventListener("DOMContentLoaded", () => {
   initReveal();
-  const year = $("#year");
-  if (year) year.textContent = String(new Date().getFullYear());
+  hydrateChrome().catch((e) => console.error("Chrome hydration failed:", e));
   const page = document.body.dataset.page;
   const init = {
+    home: initHome,
     services: initServices,
+    pricing: initPricing,
     enquiry: initEnquiry,
     booking: initBooking,
     manage: initManage,

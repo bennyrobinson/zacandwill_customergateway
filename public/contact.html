@@ -1,37 +1,37 @@
 <!doctype html>
-<html lang="en-AU">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Contact &amp; FAQ — Zac &amp; Will's Lawyers</title>
+    <title>Contact &amp; FAQ</title>
     <meta
       name="description"
-      content="Contact Zac & Will's Lawyers — address, phone, email, opening hours, fees and frequently asked questions."
+      content="Contact details, opening hours, fees and frequently asked questions."
     />
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%237c2727'/%3E%3Ctext x='16' y='23' font-family='Georgia,serif' font-size='20' fill='%23f6f2ea' text-anchor='middle'%3EZW%3C/text%3E%3C/svg%3E" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2314161b'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%23cdf24a'/%3E%3C/svg%3E" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Hanken+Grotesk:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="/assets/styles.css" />
     <script src="/assets/app.js" defer></script>
   </head>
-  <body data-page="contact">
+  <body data-page="contact" data-title="Contact &amp; FAQ">
     <header class="site-header">
       <div class="wrap">
         <a class="brand" href="/">
-          Zac <span class="amp">&amp;</span> Will <small>Lawyers</small>
+          <span class="mark" data-bi="mark" aria-hidden="true">•</span>
+          <span class="brand-name" data-bi="name" data-empty="true">Consulting</span>
         </a>
         <nav class="nav" aria-label="Primary">
-          <a href="/services.html">Practice&nbsp;areas</a>
-          <a href="/book.html">Book</a>
+          <a href="/services.html">Services</a>
+          <a href="/pricing.html">Pricing</a>
+          <a href="/contact.html" class="nav-link-secondary" aria-current="page">Contact</a>
           <a href="/enquiry.html" class="nav-link-secondary">Enquire</a>
-          <a href="/manage.html" class="nav-link-secondary">Manage&nbsp;booking</a>
-          <a href="/contact.html" aria-current="page">Contact</a>
-          <a href="/book.html" class="btn btn--oxblood nav-cta"
-            >Free consult <span class="arrow">→</span></a
+          <a href="/book.html" class="btn btn--accent nav-cta"
+            >Book a call <span class="arrow">→</span></a
           >
         </nav>
       </div>
@@ -46,7 +46,6 @@
         </div>
       </section>
 
-      <!-- Loading / error states -->
       <section class="band" id="contact-loading">
         <div class="wrap">
           <p class="is-loading">
@@ -60,17 +59,15 @@
           <div class="alert alert--info" role="status">
             We couldn't load our contact details just now. Please
             <a href="/enquiry.html">send an enquiry</a> or
-            <a href="/book.html">book a consultation</a> and we'll be in touch.
+            <a href="/book.html">book a call</a> and we'll be in touch.
           </div>
         </div>
       </section>
 
-      <!-- Rendered from get_business_info -->
       <div id="contact-content" hidden>
         <section class="band">
           <div class="wrap">
             <div class="contact-grid">
-              <!-- Contact details -->
               <div class="info" id="contact-section" data-reveal>
                 <div class="band-head" style="margin-bottom: 1.5rem">
                   <div>
@@ -83,7 +80,6 @@
                 <dl id="contact-info"></dl>
               </div>
 
-              <!-- Opening hours -->
               <div id="hours-section" data-reveal hidden>
                 <div class="band-head" style="margin-bottom: 1.5rem">
                   <div>
@@ -102,8 +98,7 @@
           </div>
         </section>
 
-        <!-- Fees -->
-        <section class="band band--deep" id="fees-section" hidden>
+        <section class="band band--tint" id="fees-section" hidden>
           <div class="wrap" style="max-width: 760px">
             <div class="band-head">
               <div>
@@ -115,7 +110,6 @@
           </div>
         </section>
 
-        <!-- FAQ -->
         <section class="band" id="faq-section" hidden>
           <div class="wrap" style="max-width: 820px">
             <div class="band-head">
@@ -133,33 +127,30 @@
     <footer class="site-footer">
       <div class="wrap">
         <div>
-          <a class="brand" href="/">Zac <span class="amp">&amp;</span> Will</a>
-          <p style="max-width: 38ch">
-            Compensation and injury lawyers acting for people, not insurers.
+          <a class="brand" href="/"><span data-bi="name">Consulting</span></a>
+          <p style="max-width: 40ch" data-bi="tagline">
+            Strategy and delivery for teams that want results.
           </p>
         </div>
         <div>
-          <h4>Practice areas</h4>
-          <a href="/book.html?service=personal_injury">Personal Injury</a>
-          <a href="/book.html?service=workers_compensation">Workers' Compensation</a>
-          <a href="/book.html?service=medical_negligence">Medical Negligence</a>
-          <a href="/book.html?service=motor_vehicle_accident">Motor Vehicle Accident</a>
+          <h4>Explore</h4>
+          <a href="/services.html">Services</a>
+          <a href="/pricing.html">Pricing</a>
+          <a href="/book.html">Book a call</a>
+          <a href="/contact.html">Contact &amp; FAQ</a>
         </div>
         <div>
           <h4>Get in touch</h4>
-          <a href="/book.html">Book a consultation</a>
+          <a data-bi="email" href="#" hidden></a>
+          <a data-bi="phone" href="#" hidden></a>
           <a href="/enquiry.html">Send an enquiry</a>
           <a href="/manage.html">Manage a booking</a>
-          <a href="/services.html">Check eligibility</a>
-          <a href="/contact.html">Contact &amp; FAQ</a>
         </div>
       </div>
       <div class="footer-legal">
         <div class="wrap">
-          This website provides general information only and does not constitute
-          legal advice. Liability limited by a scheme approved under Professional
-          Standards Legislation. © <span id="year">2026</span> Zac &amp; Will's
-          Lawyers.
+          © <span id="year">2026</span> <span data-bi="name">Consulting</span>.
+          All rights reserved.
         </div>
       </div>
     </footer>

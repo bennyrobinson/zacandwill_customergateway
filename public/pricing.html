@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pricing &amp; plans</title>
+    <meta
+      name="description"
+      content="Transparent monthly engagement plans. Pick a pace that fits, or talk to us about a bespoke scope."
+    />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2314161b'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%23cdf24a'/%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Hanken+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/assets/styles.css" />
+    <script src="/assets/app.js" defer></script>
+  </head>
+  <body data-page="pricing" data-title="Pricing">
+    <header class="site-header">
+      <div class="wrap">
+        <a class="brand" href="/">
+          <span class="mark" data-bi="mark" aria-hidden="true">•</span>
+          <span class="brand-name" data-bi="name" data-empty="true">Consulting</span>
+        </a>
+        <nav class="nav" aria-label="Primary">
+          <a href="/services.html">Services</a>
+          <a href="/pricing.html" aria-current="page">Pricing</a>
+          <a href="/contact.html" class="nav-link-secondary">Contact</a>
+          <a href="/enquiry.html" class="nav-link-secondary">Enquire</a>
+          <a href="/book.html" class="btn btn--accent nav-cta"
+            >Book a call <span class="arrow">→</span></a
+          >
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="page-head">
+        <div class="wrap">
+          <span class="eyebrow" data-reveal>Pricing</span>
+          <h1 data-reveal>Plans that <em>scale with you.</em></h1>
+          <p data-reveal>
+            Simple monthly engagements — no lock-in beyond the minimum term, no
+            surprise invoices. Every plan starts with a free intro call.
+          </p>
+        </div>
+      </section>
+
+      <section class="band">
+        <div class="wrap">
+          <div class="plans" id="plans-list">
+            <p class="is-loading"><span class="spinner"></span> Loading plans…</p>
+          </div>
+          <div
+            id="plans-error"
+            class="alert alert--info"
+            role="status"
+            hidden
+          >
+            Our plans aren't available right now. Please
+            <a href="/book.html">book a call</a> or
+            <a href="/enquiry.html">send an enquiry</a> and we'll talk you through
+            the options.
+          </div>
+          <p
+            id="plans-note"
+            class="hint"
+            style="margin-top: 1.75rem; max-width: 60ch"
+            hidden
+          ></p>
+        </div>
+      </section>
+
+      <section class="band band--dark">
+        <div class="wrap band-head split">
+          <div>
+            <span class="eyebrow">Not sure which plan?</span>
+            <h2>Let's figure it out together.</h2>
+          </div>
+          <div>
+            <p>
+              Book a free intro call and we'll recommend the right pace for where
+              you are — or scope something custom.
+            </p>
+            <div class="cta-row">
+              <a class="btn btn--signal" href="/book.html"
+                >Book a call <span class="arrow">→</span></a
+              >
+              <a
+                class="btn btn--ghost"
+                style="color: var(--bg); border-color: rgba(255,255,255,.3)"
+                href="/enquiry.html"
+                >Ask a question</a
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap">
+        <div>
+          <a class="brand" href="/"><span data-bi="name">Consulting</span></a>
+          <p style="max-width: 40ch" data-bi="tagline">
+            Strategy and delivery for teams that want results.
+          </p>
+        </div>
+        <div>
+          <h4>Explore</h4>
+          <a href="/services.html">Services</a>
+          <a href="/pricing.html">Pricing</a>
+          <a href="/book.html">Book a call</a>
+          <a href="/contact.html">Contact &amp; FAQ</a>
+        </div>
+        <div>
+          <h4>Get in touch</h4>
+          <a data-bi="email" href="#" hidden></a>
+          <a data-bi="phone" href="#" hidden></a>
+          <a href="/enquiry.html">Send an enquiry</a>
+          <a href="/manage.html">Manage a booking</a>
+        </div>
+      </div>
+      <div class="footer-legal">
+        <div class="wrap">
+          © <span id="year">2026</span> <span data-bi="name">Consulting</span>.
+          All rights reserved.
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,30 +1,30 @@
-# Zac & Will's Lawyers
+# Consulting
 
-> Compensation and injury lawyers acting for people, not insurers. Practice
-> areas: personal injury, workers' compensation, medical negligence, and motor
-> vehicle accidents. First consultation is free.
+> A consulting practice offering productised services and clear monthly
+> engagement plans. Business details, services, hours and FAQs are served live
+> from the Customer Gateway. The first intro call is free.
 
-This site is a public marketing front-end. Human visitors can check
-eligibility, send an enquiry, book a consultation, and reschedule or cancel a
-booking. All actions that touch personal data are protected by Cloudflare
-Turnstile and proxied server-side; the browser never contacts the booking
+This site is a public marketing front-end. Human visitors can browse services,
+view plans, check fit, send an enquiry, book an intro call, and reschedule or
+cancel a booking. All actions that touch personal data are protected by
+Cloudflare Turnstile and proxied server-side; the browser never contacts the
 backend directly.
 
 ## Pages
 
-- [Practice areas & eligibility](/services.html): What we take on, plus a quick eligibility check.
-- [Book a consultation](/book.html): Choose a matter type, view available times, and book.
-- [Send an enquiry](/enquiry.html): Tell us what happened and we'll be in touch.
+- [Services](/services.html): Productised services (from the gateway) plus a quick fit check.
+- [Pricing](/pricing.html): Monthly engagement plans.
+- [Book a call](/book.html): Choose a service, view available times, and book an intro call.
+- [Send an enquiry](/enquiry.html): Tell us what you're working on.
 - [Manage your booking](/manage.html): Reschedule or cancel — confirmed via an emailed PIN.
+- [Contact & FAQ](/contact.html): Contact details, hours, fees and FAQs.
 
 ## Agent access (MCP)
 
 AI assistants can act on behalf of users via MCP at
 https://zacwill.customer-gateway.com/mcp
 
-Capabilities: check eligibility, view availability, book a consultation, submit
-enquiries. Changing or cancelling a booking requires an email PIN confirmation
-(a 6-digit code, valid for 10 minutes, up to 5 attempts).
-
-Service IDs: personal_injury, workers_compensation, medical_negligence,
-motor_vehicle_accident.
+Capabilities: get business info, list services, check fit/eligibility, view
+availability, book an intro call, submit enquiries. Changing or cancelling a
+booking requires an email PIN confirmation (a 6-digit code, valid for 10
+minutes, up to 5 attempts).
